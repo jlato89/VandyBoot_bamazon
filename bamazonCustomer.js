@@ -22,12 +22,12 @@ connection.query('SELECT * FROM products', function (err, res) {
 if (err) throw err;
 // console.log(res);
 showProducts(res);
-mainProc()
+mainProc(res)
 connection.end();
 });
 }
 
-//* FUNCTIONS
+//* Show products
 function showProducts(res) {
    // CLI TABLE INIT
    var products = new Table({
@@ -45,19 +45,34 @@ function showProducts(res) {
    console.log(products.toString());
 }
 
-function mainProc() {
+//* Start Prompt
+function mainProc(res) {
    console.log('');
    inquirer
       .prompt([
          {
-            type: 'number',
+            type: 'rawlist',
             name: 'product_id',
-            message: "Which product would you like to buy?(please use Products ID)"
+            message: "Which product would you like to buy?",
+            choices: function(value) {
+               var choices = [];
+               for (i = 0; i < res.length; i++) {
+                  choices.push(res[i].product_name);
+               }
+               return choices;
+            }
          },
          {
-            type: 'number',
+            type: 'input',
             name: 'quantity',
-            message: "How many would you like to purchase?"
+            message: "How many would you like to purchase?",
+            validate: function (value) {
+               var num = value.match('^[0-9]*$');
+               if (num) {
+                  return true;
+               }
+               return 'Please enter a number only';
+            }
          }
       ])
       .then(answers => {
