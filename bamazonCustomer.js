@@ -20,21 +20,24 @@ function afterConnection() {
 connection.query('SELECT * FROM products', function (err, res) {
 if (err) throw err;
 // console.log(res);
-
-// CLI TABLE INIT
-var table = new Table({
-   head: ['ID', 'Product', 'Department', 'Price', 'Stock']
-   , colWidths: [5, 20, 20, 10, 10]
-});
-
-for (i = 0; i < res.length; i++) {
-   data = res[i];
-   table.push(
-      [data.id, data.product_name, data.department_name, '$'+data.price, data.stock_quantity]
-   );
-}
-console.log(table.toString());
-
+showProducts(res);
 connection.end();
 });
+}
+
+function showProducts(res) {
+   // CLI TABLE INIT
+   var products = new Table({
+      head: ['ID', 'Product', 'Department', 'Price', 'Stock']
+      , colWidths: [5, 20, 20, 10, 10]
+   });
+
+   // run through the database and store the values in a table
+   for (i = 0; i < res.length; i++) {
+      data = res[i];
+      products.push(
+         [data.id, data.product_name, data.department_name, '$' + data.price, data.stock_quantity]
+      );
+   }
+   console.log(products.toString());
 }
