@@ -53,13 +53,13 @@ function mainProc(res) {
          {
             type: 'rawlist',
             name: 'product_id',
-            message: "Which product would you like to buy?",
-            choices: function(value) {
-               var choices = [];
+            message: "Please select the ID of the product you would like to buy",
+            choices: function() {
+               var productId = [];
                for (i = 0; i < res.length; i++) {
-                  choices.push(res[i].product_name);
+                  productId.push(res[i].id);
                }
-               return choices;
+               return productId;
             }
          },
          {
@@ -76,6 +76,7 @@ function mainProc(res) {
          }
       ])
       .then(answers => {
-         // Use user feedback for... whatever!!
+         console.log(answers.product_id);
+         console.log(answers.quantity);
       });
 }
