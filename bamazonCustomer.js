@@ -23,7 +23,6 @@ if (err) throw err;
 // console.log(res);
 showProducts(res);
 mainProc(res)
-connection.end();
 });
 }
 
@@ -76,7 +75,61 @@ function mainProc(res) {
          }
       ])
       .then(answers => {
-         console.log(answers.product_id);
-         console.log(answers.quantity);
+         // console.log('ID: '+answers.product_id);
+         // console.log('User Wants: '+answers.quantity);
+         
+         var id = answers.product_id;
+         var quantity = answers.quantity;
+
+         connection.query('SELECT * FROM products WHERE id=?',[id] , function (err, res) {
+            if (err) throw err;
+            // console.log(res);
+
+            var DBquantity = res[0].stock_quantity;
+            // console.log('DB Quantity: '+DBquantity);
+
+            if (quantity > DBquantity) {
+               console.log('Store can NOT fulfil order! Please choose a lower Quantity.');
+               connection.end(); //! Close Connection
+            } else {
+               var newQuantity = DBquantity - quantity;
+               updateProduct(id, newQuantity, quantity);
+               console.log('Store has fulfilled your order! Thank you for your purchase.');
+            }
+         });
+         // connection.end(); // Close Connection
       });
+}
+
+function updateProduct(id, newQuantity, quantity) {
+   // console.log("Updating quantities...\n");
+   connection.query("UPDATE products SET ? WHERE ?",
+      [
+         {
+            stock_quantity: newQuantity
+         },
+         {
+            id: id
+         }
+      ],
+      function (err, res) {
+         if (err) {
+            console.log('There was an issue with our database, please try again.');
+            connection.end(); //! Close Connection
+            throw err;
+         }
+         orderTotal(id, quantity)
+         // console.log(res.affectedRows + " products updated!\n");
+      }
+   );
+}
+function orderTotal(id, quantity) {
+   connection.query('SELECT * FROM products WHERE id=?', [id], function (err, res) {
+      if (err) throw err;
+      var DBprice = res[0].price;
+      var purchaseTotal = DBprice * quantity;
+
+      console.log('Total Price for this order is $'+purchaseTotal);
+      connection.end(); //! Close Connection
+   });
 }
