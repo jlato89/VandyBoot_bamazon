@@ -18,7 +18,7 @@ connection.connect(function (err) {
 });
 
 function afterConnection() {
-   connection.query('SELECT * FROM departments', function (err, res) {
+   connection.query('SELECT * FROM products INNER JOIN departments ON products.department_name=departments.department_name', function (err, res) {
       if (err) throw err;
       // console.log(res);
       // connection.end(); //! Close Connection
@@ -71,27 +71,19 @@ function showOptions(res) {
 function showDeptSales(res) {
    // CLI TABLE INIT
    var products = new Table({
-      head: ['Department ID', 'Department', 'Over Head Costs', 'Product Sales', 'Total Profit']
-      , colWidths: [10, 20, 15, 15, 15]
+      head: ['Dept ID', 'Department Name', 'Over Head Costs', 'Product Sales', 'Total Profit']
+      , colWidths: [10, 20, 20, 15, 15]
    });
-
-   // Grab low Inventory Items
-   connection.query("SELECT * FROM products", 
-   function (err, product) {
-      if (err) throw err;
-      console.log('product res: '+product);
-      console.log('dept res: '+res);
+   // Grab Inventory Items
 
       // run through the database and store the values in a table
       for (i = 0; i < res.length; i++) {
          var dept = res[i];
-         var product = product[i];
-         var tProfit = 'something';
+         var profit = "Change-Me"
          products.push(
-            [dept.department_id, dept.department_name, dept.over_head_costs, product.product_sales, tProfit]
+            [dept.id, dept.department_name, dept.over_head_costs, dept.product_sales, profit]
          );
       }
       console.log(products.toString());
-   });
    connection.end(); //! Close Connection
 }
