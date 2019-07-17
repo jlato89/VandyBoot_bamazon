@@ -123,35 +123,47 @@ function showLowInv(res) {
 
 //* Add to Inventory
 function addInv(res) {
-   console.log('Add to Inventory');
-   
-
    inquirer   
       .prompt([
          {
-            type: 'input',
+            type: 'rawlist',
             name: 'id',
-            message: 'What\'s the ID number of the item you\'d like to change?',
+            message: 'Which item would you like to update',
+            choices: function () {
+               var products = [];
+               for (i = 0; i < res.length; i++) {
+                  products.push({ name: res[i].product_name, value: res[i].id });
+               }
+               return products;
+            }
+         },
+         {
+            type: 'input',
+            name: 'quantity',
+            message: 'What would you like to set the quantity of to?'
          }
       ])
    .then(answers => {
-      var answer = answers.id;
-      var dbID = res[i].data.id
-      console.log(res);
-      console.log('ANSWER: '+ answer);
-
-      for (i = 0; i < res.length; i++) {
-         if (answer == dbID) {
-            console.log('ID accepted');
-            return true
-         } else {
-            console.log('ID Rejected');
-            return false
-         }
-      }
+      var id = answers.id;
+      var quantity = answers.quantity;
+      console.log('ID: ' + id +'\nQuantity: '+quantity);
+      // run through the database and update the selected values in a table
+      connection.query("UPDATE products SET ? WHERE ?",
+         [
+            {
+               stock_quantity: quantity
+            },
+            {
+               id: id
+            }
+         ], 
+         function (err) {
+         if (err) throw err;
+         var product = res[id-1].product_name;
+         console.log(product+'\s have been updated to a quantity of '+quantity);
+      });
+      connection.end(); //! Close Connection
    });
-
-   // connection.end(); //! Close Connection
 }
 
 
