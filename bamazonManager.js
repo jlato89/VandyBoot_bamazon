@@ -140,7 +140,14 @@ function addInv(res) {
          {
             type: 'input',
             name: 'quantity',
-            message: 'What would you like to set the quantity of to?'
+            message: 'What would you like to set the quantity of to?',
+            validate: function (value) {
+               var num = value.match('^[0-9]*$');
+               if (num) {
+                  return true;
+               }
+               return 'Please enter a number only';
+            }
          }
       ])
       .then(answers => {
