@@ -54,11 +54,11 @@ function mainProc(res) {
             name: 'product_id',
             message: "Please select the ID of the product you would like to buy",
             choices: function () {
-               var productId = [];
+               var products = [];
                for (i = 0; i < res.length; i++) {
-                  productId.push({ name: res[i].product_name, value: res[i].id });
+                  products.push({ name: res[i].product_name, value: res[i].id });
                }
-               return productId;
+               return products;
             }
          },
          {
