@@ -21,8 +21,7 @@ function afterConnection() {
    connection.query('SELECT * FROM products', function (err, res) {
       if (err) throw err;
       // console.log(res);
-      options(res);
-      // showProducts(res);
+      showOptions(res);
    });
 }
 
@@ -31,7 +30,7 @@ function afterConnection() {
 // -----------------------------------------------------------------------------
 
 //* Selection Screen
-function options(res) {
+function showOptions(res) {
    var myChoices = [
       'View Products',
       'View Low Inventory',
@@ -44,13 +43,6 @@ function options(res) {
             type: 'list',
             name: 'theme',
             message: 'What do you want to do?',
-            // choices: [
-            //    'View Products',
-            //    'View Low Inventory',
-            //    new inquirer.Separator(),
-            //    'Add to Inventory',
-            //    'Add New Product'
-            // ],
             choices: myChoices,
             filter: function (val) {
                return myChoices.indexOf(val);
@@ -70,11 +62,11 @@ function options(res) {
                break;
          
             case 2:
-               console.log('3');
+               addInv(res);
                break;
          
             case 3:
-               console.log('4');
+               addProduct(res);
                break;
          
             default:
@@ -102,6 +94,7 @@ function showInv(res) {
    connection.end(); //! Close Connection
 }
 
+
 //* View Low Inventory
 function showLowInv(res) {
    // CLI TABLE INIT
@@ -124,5 +117,35 @@ function showLowInv(res) {
       }
       console.log(products.toString());
    });
+   connection.end(); //! Close Connection
+}
+
+
+//* Add to Inventory
+function addInv(res) {
+   console.log('Add to Inventory');
+   inquirer   
+      .prompt([
+         {
+            type: 'list',
+            name: 'theme',
+            message: 'What do you want to do?',
+            choices: myChoices,
+            filter: function (val) {
+               return myChoices.indexOf(val);
+            }
+         }
+      ])
+   .then(answers => {
+      var answer = answers.theme;
+   });
+
+   connection.end(); //! Close Connection
+}
+
+
+//* Add New Product
+function addProduct(res) {
+   console.log('Add New Product');
    connection.end(); //! Close Connection
 }
