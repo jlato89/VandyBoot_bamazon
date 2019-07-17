@@ -53,10 +53,10 @@ function mainProc(res) {
             type: 'rawlist',
             name: 'product_id',
             message: "Please select the ID of the product you would like to buy",
-            choices: function() {
+            choices: function () {
                var productId = [];
                for (i = 0; i < res.length; i++) {
-                  productId.push(res[i].id);
+                  productId.push({ name: res[i].product_name, value: res[i].id });
                }
                return productId;
             }
