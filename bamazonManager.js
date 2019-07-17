@@ -35,7 +35,7 @@ function showOptions(res) {
       'View Products',
       'View Low Inventory',
       'Add to Inventory',
-      'Add New Product']
+      'Add New Product'];
 
    inquirer
       .prompt([
@@ -124,23 +124,34 @@ function showLowInv(res) {
 //* Add to Inventory
 function addInv(res) {
    console.log('Add to Inventory');
+   
+
    inquirer   
       .prompt([
          {
-            type: 'list',
-            name: 'options',
-            message: 'What do you want to do?',
-            choices: myChoices,
-            filter: function (val) {
-               return myChoices.indexOf(val);
-            }
+            type: 'input',
+            name: 'id',
+            message: 'What\'s the ID number of the item you\'d like to change?',
          }
       ])
    .then(answers => {
-      var answer = answers.options;
+      var answer = answers.id;
+      var dbID = res[i].data.id
+      console.log(res);
+      console.log('ANSWER: '+ answer);
+
+      for (i = 0; i < res.length; i++) {
+         if (answer == dbID) {
+            console.log('ID accepted');
+            return true
+         } else {
+            console.log('ID Rejected');
+            return false
+         }
+      }
    });
 
-   connection.end(); //! Close Connection
+   // connection.end(); //! Close Connection
 }
 
 
