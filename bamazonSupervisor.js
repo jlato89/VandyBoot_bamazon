@@ -18,7 +18,16 @@ connection.connect(function (err) {
 });
 
 function afterConnection() {
-   connection.query('SELECT * FROM products INNER JOIN departments ON products.department_name=departments.department_name', function (err, res) {
+   connection.query(
+      'SELECT DISTINCT '+
+      'products.product_sales,'+
+      'products.department_name,'+
+      'departments.department_id,'+
+      'departments.department_name,'+
+      'departments.over_head_costs '+
+      'FROM products '+
+      'INNER JOIN departments ON products.department_name = departments.department_name', 
+      function (err, res) {
       if (err) throw err;
       // console.log(res);
       // connection.end(); //! Close Connection
@@ -72,16 +81,16 @@ function showDeptSales(res) {
    // CLI TABLE INIT
    var products = new Table({
       head: ['Dept ID', 'Department Name', 'Over Head Costs', 'Product Sales', 'Total Profit']
-      , colWidths: [10, 20, 20, 15, 15]
+      , colWidths: [9, 18, 18, 15, 14]
    });
    // Grab Inventory Items
 
       // run through the database and store the values in a table
       for (i = 0; i < res.length; i++) {
          var dept = res[i];
-         var profit = "Change-Me"
+         var profit = dept.product_sales - dept.over_head_costs;
          products.push(
-            [dept.id, dept.department_name, dept.over_head_costs, dept.product_sales, profit]
+            [dept.department_id, dept.department_name, dept.over_head_costs, '$'+dept.product_sales, '$'+profit]
          );
       }
       console.log(products.toString());
