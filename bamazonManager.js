@@ -41,7 +41,7 @@ function showOptions(res) {
       .prompt([
          {
             type: 'list',
-            name: 'theme',
+            name: 'options',
             message: 'What do you want to do?',
             choices: myChoices,
             filter: function (val) {
@@ -50,7 +50,7 @@ function showOptions(res) {
          }
       ])
       .then(answers => {
-         var answer = answers.theme;
+         var answer = answers.options;
 
          switch (answer) {
             case 0:
@@ -128,7 +128,7 @@ function addInv(res) {
       .prompt([
          {
             type: 'list',
-            name: 'theme',
+            name: 'options',
             message: 'What do you want to do?',
             choices: myChoices,
             filter: function (val) {
@@ -137,7 +137,7 @@ function addInv(res) {
          }
       ])
    .then(answers => {
-      var answer = answers.theme;
+      var answer = answers.options;
    });
 
    connection.end(); //! Close Connection
