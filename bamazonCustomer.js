@@ -124,12 +124,32 @@ function updateProduct(id, newQuantity, quantity) {
    );
 }
 function orderTotal(id, quantity) {
-   connection.query('SELECT * FROM products WHERE id=?', [id], function (err, res) {
+   connection.query('SELECT * FROM products WHERE id=?', [id], 
+   function (err, res) {
       if (err) throw err;
       var DBprice = res[0].price;
+      var dbProductSales = res[0].product_sales;
       var purchaseTotal = DBprice * quantity;
 
       console.log('Total Price for this order is $'+purchaseTotal);
-      connection.end(); //! Close Connection
+
+      // Add Purchase total to Product Sales
+      connection.query("UPDATE products SET ? WHERE ?",
+      [
+         {
+            product_sales: dbProductSales += purchaseTotal
+         },
+         {
+            id: id
+         }
+      ],
+      function (err, res) {
+         if (err) {
+            console.log('There was an issue with our database, please try again.');
+            connection.end(); //! Close Connection
+            throw err;
+         }
+         connection.end(); //! Close Connection
+      });
    });
 }
