@@ -19,14 +19,15 @@ connection.connect(function (err) {
 
 function afterConnection() {
    connection.query(
-      'SELECT DISTINCT '+
+      'SELECT '+
       'products.product_sales,'+
       'products.department_name,'+
       'departments.department_id,'+
       'departments.department_name,'+
       'departments.over_head_costs '+
       'FROM products '+
-      'INNER JOIN departments ON products.department_name = departments.department_name', 
+      'INNER JOIN departments ON products.department_name = departments.department_name '+
+      'GROUP BY departments.department_name', 
       function (err, res) {
       if (err) throw err;
       // console.log(res);
@@ -66,7 +67,7 @@ function showOptions(res) {
                break;
 
             case 1:
-               creatDept(res);
+               createDept(res);
                break;
 
             default:
@@ -95,4 +96,48 @@ function showDeptSales(res) {
       }
       console.log(products.toString());
    connection.end(); //! Close Connection
+}
+
+
+//* Create New Department
+function createDept(res) {
+   inquirer
+      .prompt([
+         {
+            type: 'input',
+            name: 'department_name',
+            message: 'Department Name'
+         },
+         {
+            type: 'input',
+            name: 'over_head_costs',
+            message: 'Over Head Costs',
+            validate: function (value) {
+               var num = value.match('^[0-9]*$');
+               if (num) {
+                  return true;
+               }
+               return 'Please enter a number only';
+            }
+         }
+      ])
+      .then(answers => {
+         var department = answers.department_name;
+         var overHead = answers.over_head_costs;
+         console.log('Dept: ' + department + '\nOverHead: ' + overHead);
+
+         // run through the database and update the selected values in a table
+         connection.query("INSERT INTO departments SET ?",
+            [
+               {
+                  department_name: department,
+                  over_head_costs: overHead,
+               },
+            ],
+            function (err) {
+               if (err) throw err;
+               console.log(department + ' been added');
+            });
+         connection.end(); //! Close Connection
+      });
 }
