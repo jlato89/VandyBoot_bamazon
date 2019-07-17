@@ -143,32 +143,78 @@ function addInv(res) {
             message: 'What would you like to set the quantity of to?'
          }
       ])
-   .then(answers => {
-      var id = answers.id;
-      var quantity = answers.quantity;
-      console.log('ID: ' + id +'\nQuantity: '+quantity);
-      // run through the database and update the selected values in a table
-      connection.query("UPDATE products SET ? WHERE ?",
-         [
-            {
-               stock_quantity: quantity
-            },
-            {
-               id: id
-            }
-         ], 
-         function (err) {
-         if (err) throw err;
-         var product = res[id-1].product_name;
-         console.log(product+'\s have been updated to a quantity of '+quantity);
+      .then(answers => {
+         var id = answers.id;
+         var quantity = answers.quantity;
+         // console.log('ID: ' + id +'\nQuantity: '+quantity);
+
+         // run through the database and update the selected values in a table
+         connection.query("UPDATE products SET ? WHERE ?",
+            [
+               {
+                  stock_quantity: quantity
+               },
+               {
+                  id: id
+               }
+            ], 
+            function (err) {
+            if (err) throw err;
+            var product = res[id-1].product_name;
+            console.log(product+'\s have been updated to a quantity of '+quantity);
+         });
+         connection.end(); //! Close Connection
       });
-      connection.end(); //! Close Connection
-   });
 }
 
 
 //* Add New Product
 function addProduct(res) {
-   console.log('Add New Product');
-   connection.end(); //! Close Connection
+   inquirer
+      .prompt([
+         {
+            type: 'input',
+            name: 'product_name',
+            message: 'Item Name'
+         },
+         {
+            type: 'input',
+            name: 'department_name',
+            message: 'Item Department'
+         },
+         {
+            type: 'input',
+            name: 'price',
+            message: 'Price of Item'
+         },
+         {
+            type: 'input',
+            name: 'quantity',
+            message: 'Item Quantity' 
+         }
+      ])
+      .then(answers => {
+         var product = answers.product_name;
+         var department = answers.department_name;
+         var price = answers.price;
+         var quantity = answers.quantity;
+         console.log('Product: ' + product + '\nDepartment: ' + department);
+         console.log('\nPrice: ' + price + '\nQuantity: ' +quantity);
+
+         // run through the database and update the selected values in a table
+         connection.query("INSERT INTO products SET ?",
+            [
+               {
+                  product_name: product,
+                  department_name: department,
+                  price: price,
+                  stock_quantity: quantity
+               },
+            ],
+            function (err) {
+               if (err) throw err;
+               console.log(product + '\s have been added with a quantity of ' + quantity);
+            });
+         connection.end(); //! Close Connection
+      });
 }
