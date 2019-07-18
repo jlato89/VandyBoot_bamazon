@@ -19,14 +19,8 @@ connection.connect(function (err) {
 
 function afterConnection() {
    connection.query(
-      'SELECT '+
-      'products.product_sales,'+
-      'products.department_name,'+
-      'departments.department_id,'+
-      'departments.department_name,'+
-      'departments.over_head_costs '+
-      'FROM products '+
-      'INNER JOIN departments ON products.department_name = departments.department_name '+
+      'SELECT * FROM products '+
+      'RIGHT JOIN departments ON products.department_name = departments.department_name '+
       'GROUP BY departments.department_name', 
       function (err, res) {
       if (err) throw err;
