@@ -8,7 +8,9 @@ var connection = mysql.createConnection({
    port: 3306,
    user: 'root',
    password: 'password',
-   database: 'bamazon_db'
+   database: 'bamazon_db',
+   supportBigNumbers: true,
+   bigNumberStrings: true
 });
 
 connection.connect(function (err) {
@@ -34,7 +36,7 @@ function showOptions(res) {
    var myChoices = [
       'View Products',
       'View Low Inventory',
-      'Add to Inventory',
+      'Update Inventory',
       'Add New Product'];
 
    inquirer
@@ -62,7 +64,7 @@ function showOptions(res) {
                break;
          
             case 2:
-               addInv(res);
+               updateInv(res);
                break;
          
             case 3:
@@ -122,7 +124,7 @@ function showLowInv(res) {
 
 
 //* Add to Inventory
-function addInv(res) {
+function updateInv(res) {
    inquirer   
       .prompt([
          {
@@ -205,8 +207,6 @@ function addProduct(res) {
          var department = answers.department_name;
          var price = answers.price;
          var quantity = answers.quantity;
-         console.log('Product: ' + product + '\nDepartment: ' + department);
-         console.log('\nPrice: ' + price + '\nQuantity: ' +quantity);
 
          // run through the database and update the selected values in a table
          connection.query("INSERT INTO products SET ?",
