@@ -85,7 +85,7 @@ function showDeptSales(res) {
          var dept = res[i];
          var profit = dept.product_sales - dept.over_head_costs;
          products.push(
-            [dept.department_id, dept.department_name, dept.over_head_costs, '$'+dept.product_sales, '$'+profit]
+            [dept.department_id, dept.department_name, '$'+dept.over_head_costs, '$'+dept.product_sales, '$'+profit]
          );
       }
       console.log(products.toString());
