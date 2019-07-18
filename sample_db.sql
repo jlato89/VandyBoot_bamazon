@@ -7,8 +7,8 @@ CREATE TABLE products(
   id INT AUTO_INCREMENT NOT NULL,
   product_name VARCHAR(100) NOT NULL,
   department_name VARCHAR(50) NOT NULL,
-  price DECIMAL(5, 2) NOT NULL,
-  product_sales DECIMAL(5, 2) DEFAULT 0,
+  price NUMERIC(8, 2) NOT NULL,
+  product_sales NUMERIC(8, 2) DEFAULT 0,
   stock_quantity INT default 0 NOT NULL,
   PRIMARY KEY (id)
 );
@@ -16,7 +16,7 @@ CREATE TABLE products(
 CREATE TABLE departments(
   department_id INT(2) ZEROFILL AUTO_INCREMENT,
   department_name VARCHAR(50) NOT NULL,
-  over_head_costs DECIMAL(5, 2) NOT NULL,
+  over_head_costs NUMERIC(8, 2) NOT NULL,
   PRIMARY KEY (department_id)
 );
 
