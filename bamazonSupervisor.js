@@ -8,7 +8,9 @@ var connection = mysql.createConnection({
    port: 3306,
    user: 'root',
    password: 'password',
-   database: 'bamazon_db'
+   database: 'bamazon_db',
+   supportBigNumbers: true,
+   bigNumberStrings: true
 });
 
 connection.connect(function (err) {
